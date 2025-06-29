@@ -1,0 +1,20 @@
+{
+  "name": "console-tee",
+  "version": "0.0.0",
+  "description": "A simple Node.js package to tee console output to a file",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "keywords": [
+    "console",
+    "tee",
+    "output",
+    "file",
+    "logging"
+  ],
+  "author": "laggingreflex",
+  "license": "MIT"
+}
