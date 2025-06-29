@@ -1,6 +1,6 @@
 {
   "name": "console-tee",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A simple Node.js package to tee console output to a file",
   "main": "index.js",
   "scripts": {
