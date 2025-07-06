@@ -6,8 +6,9 @@
   "scripts": {
     "start": "node index.js"
   },
-  "dependencies": {},
-  "devDependencies": {},
+  "dependencies": {
+    "console-interceptor": "^0.1.0"
+  },
   "keywords": [
     "console",
     "tee",
