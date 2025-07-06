@@ -14,27 +14,26 @@ const errFile = new File(process.argv[3] || process.env["CONSOLE_TEE_ERR"] || lo
   sync,
 });
 
-// Patch process.stdout/stderr.write to tee output to files
-process.stdout.write = function writeTee() {
-  originalStdoutWrite.apply(process.stdout, arguments);
-  logFile.write(arguments);
-};
+// // Patch process.stdout/stderr.write to tee output to files
+// process.stdout.write = function writeTee() {
+//   originalStdoutWrite.apply(process.stdout, arguments);
+//   logFile.write(arguments);
+// };
 
-process.stderr.write = function writeTee() {
-  originalStderrWrite.apply(process.stderr, arguments);
-  errFile.write(arguments);
-};
+// process.stderr.write = function writeTee() {
+//   originalStderrWrite.apply(process.stderr, arguments);
+//   errFile.write(arguments);
+// };
 
 // Use console-interceptor to tee all console methods to files
-consoleInterceptor((method, args) => {
+consoleInterceptor((method, args, {swallow}) => {
   const msg = formatWithOptions({ depth: 10 }, ...args) + "\n";
   if (method === "error") {
     errFile.write(msg);
   } else {
     logFile.write(msg);
   }
-  // Let the original console method run as normal
-  return;
+  return swallow;
 });
 
 if (logFile.filename === errFile.filename) {
@@ -43,3 +42,8 @@ if (logFile.filename === errFile.filename) {
   console.log("console-tee:", logFile.filename);
   console.log("console-tee (err):", errFile.filename);
 }
+
+process.on("beforeExit", () => {
+  errFile.sync();
+  logFile.sync();
+});
