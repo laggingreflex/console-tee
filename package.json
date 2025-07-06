@@ -7,7 +7,7 @@
     "start": "node index.js"
   },
   "dependencies": {
-    "console-interceptor": "^0.1.0"
+    "console-interceptor": "^0.2.0"
   },
   "keywords": [
     "console",
