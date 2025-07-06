@@ -33,7 +33,7 @@ consoleInterceptor((method, args, {swallow}) => {
   } else {
     logFile.write(msg);
   }
-  return swallow;
+  return;
 });
 
 if (logFile.filename === errFile.filename) {

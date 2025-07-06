@@ -4,11 +4,17 @@ import { formatWithOptions } from "util";
 export default class File {
   constructor(filename, { sync = false } = {}) {
     this.filename = filename;
-    this.fd = fs.openSync(this.filename, "a");
-    this.file = createWriteStream(null, { fd: this.fd, flags: "a" });
+    try {
+      this.fd = fs.openSync(this.filename, "a");
+      this.file = createWriteStream(null, { fd: this.fd, flags: "a" });
+    } catch (error) {
+      console.error("Error opening file:", error.message);
+      this.disabled = true;
+    }
     this.forceSync = sync;
   }
   write(args) {
+    if (this.disabled) return;
     if (!args?.length) return;
     try {
       this.file.write.apply(this.file, [File.join(args)]);
@@ -20,6 +26,7 @@ export default class File {
     }
   }
   writeSync(args) {
+    if (this.disabled) return;
     if (!args?.length) return;
     try {
       this.file.write.apply(this.file, [File.join(args)]);
@@ -29,6 +36,7 @@ export default class File {
     this.sync();
   }
   sync() {
+    if (this.disabled) return;
     try {
       fs.fsyncSync(this.fd); // blocks until write hits disk
     } catch (error) {
@@ -42,6 +50,7 @@ export default class File {
       .join("");
   }
   get size() {
+    if (this.disabled) return -Infinity;
     return fs.fstatSync(this.fd).size;
   }
   noop() {}
