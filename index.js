@@ -1,5 +1,6 @@
-import { formatWithOptions } from "util";
 import consoleInterceptor from "console-interceptor";
+import { formatWithOptions } from "util";
+import { URL } from "url";
 import File from "./file.js";
 
 const originalStdoutWrite = process.stdout.write;
@@ -9,10 +10,21 @@ const sync = !(
   process.argv.includes("--no-sync") ||
   String(process.env["CONSOLE_TEE_SYNC"]).toLowerCase() === "false"
 );
-const logFile = new File(process.argv[2] || process.env["CONSOLE_TEE"] || "output.log", { sync });
-const errFile = new File(process.argv[3] || process.env["CONSOLE_TEE_ERR"] || logFile.filename, {
-  sync,
-});
+const urlParams = new URL(import.meta.url).searchParams;
+const logFile = new File(
+  process.argv[2] ||
+    urlParams.get("CONSOLE_TEE") ||
+    process.env["CONSOLE_TEE"] ||
+    "output.log",
+  { sync }
+);
+const errFile = new File(
+  process.argv[3] ||
+    urlParams.get("CONSOLE_TEE_ERR") ||
+    process.env["CONSOLE_TEE_ERR"] ||
+    logFile.filename,
+  { sync }
+);
 
 // // Patch process.stdout/stderr.write to tee output to files
 // process.stdout.write = function writeTee() {
